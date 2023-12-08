@@ -8,7 +8,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Driver;
 import java.time.Duration;
 
 public class StandTest {
@@ -46,7 +45,6 @@ public class StandTest {
 //        webDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         wait = new WebDriverWait(webDriver, Duration.ofSeconds(20));
         webDriver.get(url);
-
     }
 
     @Test
@@ -88,8 +86,6 @@ public class StandTest {
             e.printStackTrace();
         }
     }
-
-
 
     @AfterEach
     public void close(){
