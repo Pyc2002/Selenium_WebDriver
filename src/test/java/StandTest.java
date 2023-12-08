@@ -3,6 +3,7 @@ import org.junit.jupiter.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -43,13 +44,13 @@ public class StandTest {
         webDriver = new ChromeDriver(chromeOptions);
         webDriver.manage().window().maximize();
 //        webDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-        wait = new WebDriverWait(webDriver, Duration.ofSeconds(20));
-        webDriver.get(url);
+        wait = new WebDriverWait(webDriver, Duration.ofSeconds(30));
+
     }
 
     @Test
     void loginTest(){
-
+        webDriver.get(url);
 //        WebElement usernameField = webDriver.findElement(By.cssSelector("form#login input[type='text']"));
 //        WebElement passwordField = webDriver.findElement(By.cssSelector("form#login input[type='password']"));
 //        WebElement button = webDriver.findElement(By.cssSelector("form#login button"));
@@ -61,6 +62,7 @@ public class StandTest {
 
     @Test
     void groupTest(){
+        webDriver.get(url);
         String groupTitle = "HomeworkTask2" + System.currentTimeMillis();
         // login
        login();
@@ -85,6 +87,26 @@ public class StandTest {
         }catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+
+    @Test
+    public void testDragAndDropActionWithScreenshot() throws InterruptedException {
+        // Навигация на https://www.globalsqa.com/demo-site/draganddrop/
+        webDriver.get("https://www.globalsqa.com/demo-site/draganddrop/");
+
+        // Переключение на фрейм, так как элементы для работы находятся внутри тега iframe
+        webDriver.switchTo().frame(webDriver.findElement(By.cssSelector("iframe.demo-frame.lazyloaded")));
+
+        // Поиск двух элементов для операции drag&drop
+        WebElement pictureElement = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.cssSelector("ul#gallery li.ui-draggable")));
+        WebElement trashSection = webDriver.findElement(By.id("trash"));
+
+        // Класс Actions в деле
+        Actions action = new Actions(webDriver);
+        action.dragAndDrop(pictureElement, trashSection)
+                .build().perform();
     }
 
     @AfterEach
