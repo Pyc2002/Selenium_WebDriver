@@ -1,59 +1,60 @@
 package objectPage.tableElements;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.FluentWait;
-
+import com.codeborne.selenide.SelenideElement;
 import java.time.Duration;
-import java.util.function.Function;
+
+import static com.codeborne.selenide.Condition.visible;
+
 
 public class GroupTableRow {
-    private final WebElement root;
-
-    public GroupTableRow(WebElement root) {
-        this.root = root;
+    private SelenideElement element;
+    public GroupTableRow(SelenideElement element) {
+        this.element = element;
     }
 
-    public String getTitleOfGroupFromTable() {
-        return root.findElement(By.xpath("./td[2]")).getText();
+//    private SelenideElement trashIcon = element.$x("./td/button[text()='delete']");
+//    private SelenideElement restoreFromTrashIcon = element.$x("./td/button[text()='restore_from_trash']");
+//    private SelenideElement titleOfGroupFromTable = element.$x("./td[2]");
+//    private SelenideElement statusOfGroupFromTable = element.$x("./td[3]");
+//    private SelenideElement quantityOfStudents = element.$x("./td[4]//span");
+//    private SelenideElement zoomInIcon = element.$x(".//td/button[contains(., 'zoom_in')]");
+
+
+
+    public String getTitleOfGroup() {
+//        return titleOfGroupFromTable.should(visible).text();
+        return element.$x("./td[2]").should(visible).getText();
     }
 
-    public String getStatusOfGroupFromTable() {
-        return root.findElement(By.xpath("./td[3]")).getText();
-    }
-
-    private void waitUntil(Function<WebElement, WebElement> condition) {
-        new FluentWait<>(root)
-                .withTimeout(Duration.ofSeconds(30))
-                .pollingEvery(Duration.ofSeconds(1))
-                .ignoring(NoSuchElementException.class)
-                .until(condition);
+    public String getStatusOfGroup() {
+//        return statusOfGroupFromTable.should(visible).text();
+        return element.$x("./td[3]").should(visible).getText();
     }
 
     public void clickTrashIcon(){
-        root.findElement(By.xpath("./td/button[text()='delete']")).click();
-        waitUntil(root -> root.findElement(By.xpath("./td/button[text()='restore_from_trash']")));
+//        trashIcon.should(visible).click();
+//        restoreFromTrashIcon.shouldBe(visible, Duration.ofSeconds(40));
+
+        element.$x("./td/button[text()='delete']").should(visible).click();
+        element.$x("./td/button[text()='restore_from_trash']").shouldBe(visible, Duration.ofSeconds(40));
+
     }
 
     public void clickRestoreFromTrashIcon() {
-        root.findElement(By.xpath("./td/button[text()='restore_from_trash']")).click();
-        waitUntil(root -> root.findElement(By.xpath("./td/button[text()='delete']")));
+//        restoreFromTrashIcon.should(visible).click();
+//        trashIcon.shouldBe(visible, Duration.ofSeconds(40));
+
+        element.$x("./td/button[text()='restore_from_trash']").shouldBe(visible).click();
+        element.$x("./td/button[text()='delete']").should(visible, Duration.ofSeconds(40));
     }
 
-    public String getQuantityOfStudents(){
-        return root.findElement(By.xpath("./td[4]//span")).getText();
-    }
-
-    public void waitStudentsCount(String expectedCount) {
-        waitUntil(root -> root.findElement(By.xpath("./td[4]//span[text()='%s']".formatted(expectedCount))));
+    public void waitStudentsCount(int expectedCount) {
+        element.$x("./td[4]//span[text()='%s']".formatted(expectedCount)).shouldBe(visible);
     }
 
     public void clickZoomInButton(){
-        root.findElement(By.xpath(".//td/button[contains(., 'zoom_in')]")).click();
+//        zoomInIcon.should(visible).click();
+
+        element.$x(".//td/button[contains(., 'zoom_in')]").should(visible).click();
     }
-
-
-
-
 }

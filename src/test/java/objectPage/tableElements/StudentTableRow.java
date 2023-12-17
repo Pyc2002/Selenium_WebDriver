@@ -1,45 +1,53 @@
 package objectPage.tableElements;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.FluentWait;
+import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.SelenideElement;
 
 import java.time.Duration;
-import java.util.function.Function;
+
+import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selenide.*;
 
 public class StudentTableRow {
-    private final WebElement webElement;
 
-    public StudentTableRow(WebElement webElement) {
-        this.webElement = webElement;
+    private SelenideElement element;
+    public StudentTableRow(SelenideElement element) {
+        this.element = element;
     }
 
-    private void waitUntil(Function<WebElement, WebElement> condition) {
-        new FluentWait<>(webElement)
-                .withTimeout(Duration.ofSeconds(30))
-                .pollingEvery(Duration.ofSeconds(1))
-                .ignoring(NoSuchElementException.class)
-                .until(condition);
+
+//    private SelenideElement titleOfStudent = element.$x("./td[2]");
+//    private SelenideElement statusOfStudent = element.$x("./td[4]");
+//    private SelenideElement trashIcon = element.$x("./td/button[text()='delete']");
+//    private SelenideElement restoreFromTrashIcon = element.$x("./td/button[text()='restore_from_trash']");
+
+
+    public String getTitleOfStudent() {
+//        return titleOfStudent.should(Condition.visible).getText();
+        return element.$x("./td[2]").getText();
     }
 
-    public String getTitleOfStudentFromTable() {
-        return webElement.findElement(By.xpath("./td[2]")).getText();
-    }
-
-    public String getStatusOfStudentFromTable() {
-        return webElement.findElement(By.xpath("./td[4]")).getText();
+    public String getStatusOfStudent() {
+//        return statusOfStudent.should(Condition.visible).getText();
+        return element.$x("./td[4]").getText();
     }
 
     public void clickStudentTrashIcon(){
-        webElement.findElement(By.xpath("./td/button[text()='delete']")).click();
-        waitUntil(root -> root.findElement(By.xpath("./td/button[text()='restore_from_trash']")));
+//        trashIcon.should(Condition.visible).click();
+//        restoreFromTrashIcon.shouldBe(Condition.visible, Duration.ofSeconds(40));
+
+        element.$x("./td/button[text()='delete']").click();
+        element.$x("./td/button[text()='restore_from_trash']")
+                .shouldBe(visible, Duration.ofSeconds(40));
     }
 
     public void clickStudentRestoreFromTrashIcon() {
-        webElement.findElement(By.xpath("./td/button[text()='restore_from_trash']")).click();
-        waitUntil(root -> root.findElement(By.xpath("./td/button[text()='delete']")));
+//        restoreFromTrashIcon.should(Condition.visible).click();
+//        trashIcon.shouldBe(Condition.visible, Duration.ofSeconds(40));
+
+        element.$x("./td/button[text()='restore_from_trash']").click();
+        element.$x("./td/button[text()='delete']")
+                .shouldBe(visible, Duration.ofSeconds(30));
     }
 }
 

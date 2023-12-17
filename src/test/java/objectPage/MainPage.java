@@ -1,140 +1,87 @@
 package objectPage;
 
+import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.SelenideElement;
 import objectPage.tableElements.GroupTableRow;
 import objectPage.tableElements.StudentTableRow;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.List;
+import static com.codeborne.selenide.CollectionCondition.sizeGreaterThan;
+import static com.codeborne.selenide.Selenide.*;
 
 public class MainPage {
-    private final WebDriverWait wait;
-
-    @FindBy(id = "create-btn")
-    private WebElement createNewGroupButton;
-    @FindBy(css = "form#update-item input[type='text']")
-    private WebElement createNewGroupField;
-    @FindBy(css = "form#update-item button")
-    private WebElement saveNewGroupButton;
-    @FindBy(css = "nav li.mdc-menu-surface--anchor a")
-    private WebElement getUsername;
-    @FindBy(xpath = "//span[text()='Creating Study Group']" +
-            "//ancestor::div[contains(@class, 'form-modal-header')]//button")
-    private WebElement closeCreateGroupIcon;
-    @FindBy(xpath = "//table[@aria-label='Tutors list']/tbody/tr")
-    private List<WebElement> rowsInGroupTable;
-
-    @FindBy(xpath = "//button[@class='mdc-button smui-button--color-secondary mdc-ripple-upgraded']")
-    private WebElement addStudentIcon;
-    @FindBy(css = "form#generate-logins input[type='number']")
-    private WebElement quantityOfStudentsInput;
-    @FindBy(css = "form#generate-logins button")
-    private WebElement saveStudentsButton;
-    @FindBy(xpath = "//span[text()='Creating new logins']" +
-            "//ancestor::div[contains(@class, 'form-modal-header')]//button")
-    private WebElement closeAddStudentsButton;
-
-    @FindBy(xpath = "//table[@aria-label='User list']/tbody/tr")
-    private List<WebElement> rowsInStudentTable;
-    @FindBy(xpath = "./td[2]")
-    private WebElement studentTitle;
-
-    @FindBy(xpath="//nav//li[contains(@class,'mdc-menu-surface--anchor')]//span[text()='Profile']")
-    private WebElement profileButton;
-
-    public MainPage(WebDriver webDriver, WebDriverWait wait) {
-        PageFactory.initElements(webDriver, this);
-        this.wait = wait;
-    }
+    private SelenideElement createNewGroupButton = $(By.id("create-btn"));
+    private SelenideElement createNewGroupField = $("form#update-item input[type='text']");
+    private SelenideElement saveNewGroupButton = $("form#update-item button");
+    private SelenideElement getUsername = $("nav li.mdc-menu-surface--anchor a");
+    private SelenideElement closeCreateGroupIcon = $x("//span[text()='Creating Study Group']" +
+            "//ancestor::div[contains(@class, 'form-modal-header')]//button");
+    private ElementsCollection rowsInGroupTable = $$x("//table[@aria-label='Tutors list']/tbody/tr");
+    private SelenideElement addStudentIcon = $x("//button[@class='mdc-button smui-button--color-secondary mdc-ripple-upgraded']");
+    private SelenideElement quantityOfStudentsInput = $("form#generate-logins input[type='number']");
+    private SelenideElement saveStudentsButton = $("form#generate-logins button");
+    private SelenideElement closeAddStudentsButton = $x("//span[text()='Creating new logins']" +
+            "//ancestor::div[contains(@class, 'form-modal-header')]//button");
+    private ElementsCollection rowsInStudentTable = $$x("//table[@aria-label='User list']/tbody/tr");
+    private SelenideElement profileButton = $x("//nav//li[contains(@class,'mdc-menu-surface--anchor')]//span[text()='Profile']");
 
     public void checkSavingNewGroupByText(String groupName){
         String path = String.format("//td[contains(text(), '%s')]", groupName);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(path)));
+        $(By.xpath(path)).should(Condition.visible);
     }
 
     public void clickProfileButton(){
-        wait.until(ExpectedConditions.visibilityOf(getUsername)).click();
-        wait.until(ExpectedConditions.visibilityOf(profileButton)).click();
+        getUsername.should(Condition.visible).click();
+        profileButton.should(Condition.visible).click();
     }
 
     public void createGroup(String groupName){
-        // opening window createNewGroup
-        wait.until(ExpectedConditions.visibilityOf(createNewGroupButton)).click();
-//        // checking if window createNewGroup is opened
-//        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.id("studyGroupForm-title"),"Creating Study Group"));
-        // filling field createNewGroup
-        wait.until(ExpectedConditions.visibilityOf(createNewGroupField)).sendKeys(groupName);
-        // saving NewGroup
-        wait.until(ExpectedConditions.visibilityOf(saveNewGroupButton)).click();
+        createNewGroupButton.should(Condition.visible).click();
+        createNewGroupField.should(Condition.visible).setValue(groupName);
+        saveNewGroupButton.should(Condition.visible).click();
         checkSavingNewGroupByText(groupName);
     }
 
     public String getUsername(){
-       return wait.until(ExpectedConditions.visibilityOf(getUsername)).getText().replace("\n", " ");
+       return getUsername.should(Condition.visible).getText().replace("\n", " ");
     }
 
     public void closeCreateGroupModalWindow() {
-        closeCreateGroupIcon.click();
-        wait.until(ExpectedConditions.invisibilityOf(closeCreateGroupIcon));
-    }
-
-    private GroupTableRow getRowByTitle(String title) {
-        return rowsInGroupTable.stream()
-                .map(GroupTableRow::new)
-                .filter(row -> row.getTitleOfGroupFromTable().equals(title))
-                .findFirst().orElseThrow();
+        closeCreateGroupIcon.should(Condition.visible).click();
+        closeCreateGroupIcon.should(Condition.disappear);
     }
 
     public void clickTrashIconOnGroupWithTitle(String title) {
-        getRowByTitle(title).clickTrashIcon();
+        getGroupRowByTitle(title).clickTrashIcon();
     }
 
     public void clickRestoreFromTrashIconOnGroupWithTitle(String title) {
-        getRowByTitle(title).clickRestoreFromTrashIcon();
+        getGroupRowByTitle(title).clickRestoreFromTrashIcon();
     }
 
     public String getStatusOfGroupWithTitle(String title) {
-        return getRowByTitle(title).getStatusOfGroupFromTable();
+        return getGroupRowByTitle(title).getStatusOfGroup();
     }
 
-    public String getQuantityOfStudentsInGroupTable(String title){
-        return getRowByTitle(title).getQuantityOfStudents();
+    public void addStudentsInGroup(int quantityOfStudents){
+
+        addStudentIcon.should(Condition.visible).click();
+        quantityOfStudentsInput.should(Condition.visible).setValue(String.valueOf(quantityOfStudents));
+        saveStudentsButton.should(Condition.visible).click();
+        closeAddStudentsButton.should(Condition.visible).click();
     }
 
-    public void addStudentsInGroup(String quantityOfStudents){
-        wait.until(ExpectedConditions.visibilityOf(addStudentIcon)).click();
-        wait.until(ExpectedConditions.visibilityOf(quantityOfStudentsInput)).sendKeys(quantityOfStudents);
-        wait.until(ExpectedConditions.visibilityOf(saveStudentsButton)).click();
-        wait.until(ExpectedConditions.visibilityOf(closeAddStudentsButton)).click();
-        checkSavingAddingStudentsByText(quantityOfStudents);
+    public void waitStudentsCount(String groupTitle, int quantityOfStudents) {
+        getGroupRowByTitle(groupTitle).waitStudentsCount(quantityOfStudents);
     }
 
-    public void waitStudentsCount(String groupTitle, String quantityOfStudents) {
-        getRowByTitle(groupTitle).waitStudentsCount(quantityOfStudents);
-    }
-
-    public void checkSavingAddingStudentsByText(String quantityOfStudents){
-        String path = String.format("//td[contains(text(), '%s')]", quantityOfStudents);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(path)));
-    }
-
-    private StudentTableRow getStudentsRowByTitle(String title) {
-        return rowsInStudentTable.stream()
-                .map(StudentTableRow::new)
-                .filter(row -> row.getTitleOfStudentFromTable().equals(title))
-                .findFirst().orElseThrow();
-    }
     public void zoomInButton(String groupTitle){
-        getRowByTitle(groupTitle).clickZoomInButton();
+        getGroupRowByTitle(groupTitle).clickZoomInButton();
     }
 
-    public String getQuantityOfStudentsInTable(){
-        return String.valueOf(wait.until(ExpectedConditions.visibilityOfAllElements(rowsInStudentTable)).size());
+    public int getQuantityOfStudentsInTable(){
+        return rowsInStudentTable.should(sizeGreaterThan(0)).size();
     }
 
     public void clickTrashIconOnStudentWithTitle(String title) {
@@ -146,13 +93,33 @@ public class MainPage {
     }
 
     public String getStatusOfStudent(String title) {
-        return getStudentsRowByTitle(title).getStatusOfStudentFromTable();
+        return getStudentsRowByTitle(title).getStatusOfStudent();
     }
 
     public String getStudentNameByIndex(int index) {
-        wait.until(ExpectedConditions.visibilityOfAllElements(rowsInStudentTable));
-        return rowsInStudentTable.stream()
+        rowsInStudentTable.should(sizeGreaterThan(0));
+        return rowsInStudentTable.shouldHave(sizeGreaterThan(0))
+                .asDynamicIterable()
+                .stream()
                 .map(StudentTableRow::new)
-                .toList().get(index).getTitleOfStudentFromTable();
+                .toList().get(index).getTitleOfStudent();
+    }
+
+    private StudentTableRow getStudentsRowByTitle(String title) {
+        return rowsInStudentTable.shouldHave(sizeGreaterThan(0))
+                .asDynamicIterable()
+                .stream()
+                .map(StudentTableRow::new)
+                .filter(row -> row.getTitleOfStudent().equals(title))
+                .findFirst().orElseThrow();
+    }
+
+    private GroupTableRow getGroupRowByTitle(String title) {
+        return rowsInGroupTable.shouldHave(sizeGreaterThan(0))
+                .asDynamicIterable()
+                .stream()
+                .map(GroupTableRow::new)
+                .filter(row -> row.getTitleOfGroup().equals(title))
+                .findFirst().orElseThrow();
     }
 }

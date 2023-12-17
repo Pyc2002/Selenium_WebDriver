@@ -1,5 +1,7 @@
 package objectPage;
 
+import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -8,22 +10,15 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import static com.codeborne.selenide.Selenide.$;
+
 public class LoginPage {
-    private final WebDriverWait wait;
 
-    @FindBy(css = "form#login input[type='text']")
-    private WebElement usernameField;
-    @FindBy(css = "form#login input[type='password']")
-    private WebElement passwordField;
-    @FindBy(css = "form#login button")
-    private WebElement loginButton;
-    @FindBy(xpath = "//p[text() = 'Invalid credentials.']")
-    private WebElement mistake401;
+    private SelenideElement usernameField = $("form#login input[type='text']");
+    private SelenideElement passwordField = $("form#login input[type='password']");
+    private SelenideElement loginButton = $("form#login button");
+    private SelenideElement errorBlock = $("div.error-block");
 
-    public LoginPage(WebDriver webDriver, WebDriverWait wait) {
-        PageFactory.initElements(webDriver, this);
-        this.wait = wait;
-    }
 
     public void login(String username, String password){
         typeUsernameField(username);
@@ -32,17 +27,17 @@ public class LoginPage {
     }
 
     public void typeUsernameField(String username){
-        wait.until(ExpectedConditions.visibilityOf(usernameField)).sendKeys(username);
+        usernameField.should(Condition.visible).setValue(username);
     }
 
     public void typePassword(String password){
-        wait.until(ExpectedConditions.visibilityOf(passwordField)).sendKeys(password);
+        passwordField.should(Condition.visible).setValue(password);
     }
 
     public void clickLoginButton(){
-        wait.until(ExpectedConditions.visibilityOf (loginButton)).click();
+        loginButton.should(Condition.visible).click();
     }
     public String getLoginMistake(){
-        return wait.until(ExpectedConditions.visibilityOf(mistake401)).getText();
+        return errorBlock.should(Condition.visible).getText().replace("\n", " ");
     }
 }
