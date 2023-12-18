@@ -49,7 +49,7 @@ public class ProfilePage {
     }
 
     public void clearDateOfBirthField(){
-        inputDate.clear();
+        inputDate.shouldBe(Condition.visible).clear();
         saveButtonClick();
     }
 
