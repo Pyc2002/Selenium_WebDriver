@@ -12,38 +12,21 @@ public class GroupTableRow {
         this.element = element;
     }
 
-//    private SelenideElement trashIcon = element.$x("./td/button[text()='delete']");
-//    private SelenideElement restoreFromTrashIcon = element.$x("./td/button[text()='restore_from_trash']");
-//    private SelenideElement titleOfGroupFromTable = element.$x("./td[2]");
-//    private SelenideElement statusOfGroupFromTable = element.$x("./td[3]");
-//    private SelenideElement quantityOfStudents = element.$x("./td[4]//span");
-//    private SelenideElement zoomInIcon = element.$x(".//td/button[contains(., 'zoom_in')]");
-
-
-
     public String getTitleOfGroup() {
-//        return titleOfGroupFromTable.should(visible).text();
         return element.$x("./td[2]").should(visible).getText();
     }
 
     public String getStatusOfGroup() {
-//        return statusOfGroupFromTable.should(visible).text();
         return element.$x("./td[3]").should(visible).getText();
     }
 
     public void clickTrashIcon(){
-//        trashIcon.should(visible).click();
-//        restoreFromTrashIcon.shouldBe(visible, Duration.ofSeconds(40));
-
         element.$x("./td/button[text()='delete']").should(visible).click();
         element.$x("./td/button[text()='restore_from_trash']").shouldBe(visible, Duration.ofSeconds(40));
 
     }
 
     public void clickRestoreFromTrashIcon() {
-//        restoreFromTrashIcon.should(visible).click();
-//        trashIcon.shouldBe(visible, Duration.ofSeconds(40));
-
         element.$x("./td/button[text()='restore_from_trash']").shouldBe(visible).click();
         element.$x("./td/button[text()='delete']").should(visible, Duration.ofSeconds(40));
     }
@@ -53,8 +36,6 @@ public class GroupTableRow {
     }
 
     public void clickZoomInButton(){
-//        zoomInIcon.should(visible).click();
-
         element.$x(".//td/button[contains(., 'zoom_in')]").should(visible).click();
     }
 }

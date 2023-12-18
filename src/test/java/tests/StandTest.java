@@ -6,9 +6,12 @@ import com.codeborne.selenide.WebDriverRunner;
 import objectPage.LoginPage;
 import objectPage.MainPage;
 import objectPage.ProfilePage;
-import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.*;
 
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -21,7 +24,7 @@ public class StandTest {
     private LoginPage loginPage;
     private MainPage mainPage;
 
-//    @BeforeAll
+//    @BeforeAll // для Selenide убрать BeforeAll
 //    public static void selenoid(){
 //        Configuration.browser = "chrome";
 //        Configuration.remote = "http://localhost:4444/wd/hub";
@@ -33,7 +36,6 @@ public class StandTest {
 
     @BeforeEach
     public void setUp(){
-
         Selenide.open("https://test-stand.gb.ru/login");
     }
 
@@ -126,16 +128,31 @@ public class StandTest {
        assertEquals(FULLNAME, profilePage.getAvatarFullName());
     }
 
-//    @Test
-//    public void testAddingAvatar(){
-//        login();
-//        mainPage.clickProfileButton();
-//        ProfilePage profilePage = Selenide.page(ProfilePage.class);
-//        profilePage.editButtomClick();
-//        assertEquals("", profilePage.getAvatarValue());
-//        profilePage.uploadNewAvatar(new File("src/test/resources/Avatar.PNG"));
-//        assertEquals("Avatar.PNG", profilePage.getAvatarValue());
-//    }
+    @Test
+    public void testAddingAvatar(){
+        login();
+        mainPage.clickProfileButton();
+        ProfilePage profilePage = Selenide.page(ProfilePage.class);
+        profilePage.editButtonClick();
+        assertEquals("", profilePage.getAvatarValue());
+        profilePage.uploadNewAvatar(new File("src/test/resources/Avatar.PNG"));
+        assertEquals("Avatar.PNG", profilePage.getAvatarValue());
+    }
+
+    @Test
+    public void testDateOfBirthUpdate(){
+        String date = "05.05.2005";
+        login();
+        mainPage.clickProfileButton();
+        ProfilePage profilePage = Selenide.page(ProfilePage.class);
+        profilePage.editButtonClick();
+        profilePage.clearDateOfBirthField();
+        profilePage.inputDateOfBirth(date);
+        profilePage.saveButtonClick();
+        profilePage.closeEditingProfileButtonClick();
+        assertEquals(date, profilePage.getDateOfBirth());
+
+    }
 
     @AfterEach
     public void close(){
