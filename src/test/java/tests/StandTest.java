@@ -146,7 +146,7 @@ public class StandTest {
         mainPage.clickProfileButton();
         ProfilePage profilePage = Selenide.page(ProfilePage.class);
         profilePage.editButtonClick();
-        profilePage.clearDateOfBirthField();
+//        profilePage.clearDateOfBirthField();
         profilePage.inputDateOfBirth(date);
         profilePage.saveButtonClick();
         profilePage.closeEditingProfileButtonClick();

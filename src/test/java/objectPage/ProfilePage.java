@@ -48,13 +48,9 @@ public class ProfilePage {
                 .substring(inputValue.lastIndexOf("\\") + 1);
     }
 
-    public void clearDateOfBirthField(){
-        inputDate.shouldBe(Condition.visible).clear();
-        saveButtonClick();
-    }
-
     public void inputDateOfBirth(String dateInput){
-       inputDate.should(Condition.visible, Duration.ofSeconds(40)).setValue(dateInput);
+        inputDate.shouldBe(Condition.visible).clear();
+        inputDate.should(Condition.visible, Duration.ofSeconds(40)).setValue(dateInput);
     }
 
     public void saveButtonClick(){
