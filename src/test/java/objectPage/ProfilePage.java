@@ -2,6 +2,8 @@ package objectPage;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
+import org.checkerframework.checker.units.qual.C;
+import org.openqa.selenium.By;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -48,9 +50,16 @@ public class ProfilePage {
                 .substring(inputValue.lastIndexOf("\\") + 1);
     }
 
-    public void inputDateOfBirth(String dateInput){
+    public void clearDateOfBirthField(){
+        editButtonClick();
         inputDate.shouldBe(Condition.visible).clear();
-        inputDate.should(Condition.visible, Duration.ofSeconds(40)).setValue(dateInput);
+        saveButtonClick();
+        closeEditingProfileButtonClick();
+    }
+
+    public void inputDateOfBirth(String dateInput){
+        inputDate.shouldBe(Condition.value(" "), Duration.ofSeconds(30));
+        inputDate.should(Condition.visible).setValue(dateInput);
     }
 
     public void saveButtonClick(){
@@ -59,6 +68,7 @@ public class ProfilePage {
 
     public void closeEditingProfileButtonClick(){
         closeEditingProfileButton.shouldBe(Condition.visible).click();
+        closeEditingProfileButton.shouldBe(Condition.disappear, Duration.ofSeconds(30));
     }
 
     public String getDateOfBirth(){

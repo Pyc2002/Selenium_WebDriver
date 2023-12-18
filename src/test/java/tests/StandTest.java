@@ -141,12 +141,12 @@ public class StandTest {
 
     @Test
     public void testDateOfBirthUpdate(){
-        String date = "05.05.2005";
+        String date = "11.11.2011";
         login();
         mainPage.clickProfileButton();
         ProfilePage profilePage = Selenide.page(ProfilePage.class);
+        profilePage.clearDateOfBirthField();
         profilePage.editButtonClick();
-//        profilePage.clearDateOfBirthField();
         profilePage.inputDateOfBirth(date);
         profilePage.saveButtonClick();
         profilePage.closeEditingProfileButtonClick();
