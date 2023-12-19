@@ -24,15 +24,15 @@ public class StandTest {
     private LoginPage loginPage;
     private MainPage mainPage;
 
-//    @BeforeAll // для Selenide убрать BeforeAll
-//    public static void selenoid(){
-//        Configuration.browser = "chrome";
-//        Configuration.remote = "http://localhost:4444/wd/hub";
-//        Map<String, Object> map = new HashMap<>();
-//        map.put("enableVNC",true);
-//        map.put("enableLog",true);
-//        Configuration.browserCapabilities.setCapability("selenoid:options", map);
-//    }
+    @BeforeAll // для Selenide убрать BeforeAll
+    public static void selenoid(){
+        Configuration.browser = "chrome";
+        Configuration.remote = "http://localhost:4444/wd/hub";
+        Map<String, Object> map = new HashMap<>();
+        map.put("enableVNC",true);
+        map.put("enableLog",true);
+        Configuration.browserCapabilities.setCapability("selenoid:options", map);
+    }
 
     @BeforeEach
     public void setUp(){
@@ -141,17 +141,15 @@ public class StandTest {
 
     @Test
     public void testDateOfBirthUpdate(){
-        String date = "11.11.2011";
+        String date = "01.01.2001";
         login();
         mainPage.clickProfileButton();
         ProfilePage profilePage = Selenide.page(ProfilePage.class);
-        profilePage.clearDateOfBirthField();
         profilePage.editButtonClick();
         profilePage.inputDateOfBirth(date);
         profilePage.saveButtonClick();
         profilePage.closeEditingProfileButtonClick();
-        assertEquals(date, profilePage.getDateOfBirth());
-
+        profilePage.checkBirthdayText(date);
     }
 
     @AfterEach
@@ -165,6 +163,4 @@ public class StandTest {
         mainPage = Selenide.page(MainPage.class);
         assertTrue(mainPage.getUsername().contains(LOGIN));
     }
-
-
 }

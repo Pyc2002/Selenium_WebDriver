@@ -50,20 +50,13 @@ public class ProfilePage {
                 .substring(inputValue.lastIndexOf("\\") + 1);
     }
 
-    public void clearDateOfBirthField(){
-        editButtonClick();
-        inputDate.shouldBe(Condition.visible).clear();
-        saveButtonClick();
-        closeEditingProfileButtonClick();
-    }
-
     public void inputDateOfBirth(String dateInput){
-        inputDate.shouldBe(Condition.value(" "), Duration.ofSeconds(30));
         inputDate.should(Condition.visible).setValue(dateInput);
+        inputDate.should(Condition.visible, Duration.ofSeconds(30));
     }
 
     public void saveButtonClick(){
-        saveButton.shouldBe(Condition.visible, Duration.ofSeconds(40)).click();
+        saveButton.shouldBe(Condition.visible, Duration.ofSeconds(30)).click();
     }
 
     public void closeEditingProfileButtonClick(){
@@ -71,8 +64,8 @@ public class ProfilePage {
         closeEditingProfileButton.shouldBe(Condition.disappear, Duration.ofSeconds(30));
     }
 
-    public String getDateOfBirth(){
-        return getDateOfBirthInfo.should(Condition.visible).getText();
+    public void checkBirthdayText(String text){
+         getDateOfBirthInfo.should(Condition.text(text), Duration.ofSeconds(30));
     }
 
 }
